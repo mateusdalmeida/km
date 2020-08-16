@@ -23,9 +23,9 @@ class _HomeState extends State<Home> {
   String dateFormat(epoch) {
     String data = DateTime.fromMillisecondsSinceEpoch(epoch).toString();
     return data.substring(8, 10) +
-        "/" +
+        "." +
         data.substring(5, 7) +
-        "/" +
+        "." +
         data.substring(0, 4);
   }
 
@@ -34,98 +34,275 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              //card do saldo
-              Container(
-                  margin: EdgeInsets.all(20),
-                  padding: EdgeInsets.all(20),
-                  color: Colors.orange,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //km disponiveis
+                Row(
+                    textBaseline: TextBaseline.alphabetic,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
                     children: [
-                      Text("Km's Disponiveis"),
                       Observer(builder: (context) {
-                        return Text(controller.disponible.toInt().toString());
-                      })
-                    ],
-                  )),
-              //card da trip
-              Observer(builder: (context) {
-                Map trip = controller.lastTrip;
-                String road = '----';
-                if (trip['final'] != null) {
-                  road = (trip['final'] - trip['initial']).toString();
-                }
-                return Container(
-                    margin: EdgeInsets.all(20),
-                    padding: EdgeInsets.all(20),
-                    color: Colors.orange,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        return Text(
+                          controller.disponible.toInt().toString(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 80),
+                        );
+                      }),
+                      Text("km")
+                    ]),
+                SizedBox(height: 32),
+                //card da trip
+                Container(
+                  padding: EdgeInsets.all(20),
+                  color: Colors.brown[50],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                              textBaseline: TextBaseline.alphabetic,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              children: [
+                                Row(
+                                    textBaseline: TextBaseline.alphabetic,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    children: [
+                                      Observer(builder: (context) {
+                                        return Text(
+                                          controller.lastTrip['initial']
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 45),
+                                        );
+                                      }),
+                                      Text("km")
+                                    ]),
+                              ]),
+                          Icon(Icons.fast_forward),
+                          Row(
+                              textBaseline: TextBaseline.alphabetic,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              children: [
+                                Observer(builder: (context) {
+                                  String road = "----";
+                                  if (controller.lastTrip['final'] != null)
+                                    road =
+                                        controller.lastTrip['final'].toString();
+                                  return Text(
+                                    road,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 45),
+                                  );
+                                }),
+                                Text("km")
+                              ]),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Observer(builder: (context) {
+                            return Row(
+                              textBaseline: TextBaseline.alphabetic,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              children: [
+                                Text(
+                                    dateFormat(controller.lastTrip['epoch'])
+                                        .substring(0, 2),
+                                    style: TextStyle(
+                                        fontSize: 33,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                    dateFormat(controller.lastTrip['epoch'])
+                                        .substring(2),
+                                    style: TextStyle(fontSize: 25))
+                              ],
+                            );
+                          }),
+                          Row(
+                            textBaseline: TextBaseline.alphabetic,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
                             children: [
-                              Text("Ultima Viagem"),
-                              Text(road + " km")
-                            ]),
-                        Row(children: [
-                          Icon(Icons.flight_takeoff),
-                          Text(trip['initial'].toString() + ' km'),
-                          Expanded(child: SizedBox(height: 0)),
-                          Icon(Icons.flight_land),
-                          trip['final'] != null
-                              ? Text(trip['final'].toString() + ' km')
-                              : Text("Atual")
-                        ]),
-                        Text(dateFormat(trip['epoch'])),
-                        trip['obs'] != null ? Text(trip['obs']) : SizedBox(),
-                      ],
-                    ));
-              }),
-              // card da gasolina
-              Observer(builder: (context) {
-                Map gas = controller.lastGas;
-                double litros = gas['valor'] / gas['preco'];
+                              Observer(builder: (context) {
+                                String road = "--";
+                                if (controller.lastTrip['road'] != null)
+                                  road = controller.lastTrip['road'].toString();
+                                return Text(
+                                  road,
+                                  style: TextStyle(
+                                      fontSize: 33,
+                                      fontWeight: FontWeight.bold),
+                                );
+                              }),
+                              Text("km")
+                            ],
+                          ),
+                        ],
+                      ),
+                      Observer(builder: (context) {
+                        if (controller.lastTrip['obs'] != null)
+                          return Text(controller.lastTrip['obs']);
+                        else
+                          return SizedBox();
+                      }),
+                    ],
+                  ),
+                ),
 
-                return Container(
-                    margin: EdgeInsets.all(20),
-                    padding: EdgeInsets.all(20),
-                    color: Colors.orange,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text("Ultimo Abastecimento"),
-                        Text(dateFormat(gas['epoch'])),
-                        Text("Valor - RS " + gas['valor'].toStringAsFixed(2)),
-                        Text("Preço - RS " + gas['preco'].toStringAsFixed(2)),
-                        Text(litros.toStringAsFixed(2) + " lts")
-                      ],
-                    ));
-              }),
-            ],
+                SizedBox(height: 32),
+                // card da gasolina
+                Container(
+                  padding: EdgeInsets.all(20),
+                  color: Colors.brown[50],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Observer(builder: (context) {
+                              List splitValor = controller.lastGas['valor']
+                                  .toStringAsFixed(2)
+                                  .split('.');
+                              return Row(
+                                children: [
+                                  RotatedBox(
+                                      quarterTurns: -1, child: Text("Valor")),
+                                  Row(
+                                    textBaseline: TextBaseline.alphabetic,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    children: [
+                                      Text(
+                                        splitValor[0],
+                                        style: TextStyle(
+                                            fontSize: 45,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text("." + splitValor[1])
+                                    ],
+                                  )
+                                ],
+                              );
+                            }),
+                            Observer(builder: (context) {
+                              List splitPreco = controller.lastGas['preco']
+                                  .toStringAsFixed(2)
+                                  .split('.');
+                              return Row(
+                                children: [
+                                  RotatedBox(
+                                      quarterTurns: -1, child: Text("Preço")),
+                                  Row(
+                                    textBaseline: TextBaseline.alphabetic,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    children: [
+                                      Text(
+                                        splitPreco[0],
+                                        style: TextStyle(
+                                            fontSize: 45,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text("." + splitPreco[1])
+                                    ],
+                                  )
+                                ],
+                              );
+                            }),
+                          ]),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Observer(builder: (context) {
+                            return Row(
+                              textBaseline: TextBaseline.alphabetic,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              children: [
+                                Text(
+                                    dateFormat(controller.lastGas['epoch'])
+                                        .substring(0, 2),
+                                    style: TextStyle(
+                                        fontSize: 33,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                    dateFormat(controller.lastGas['epoch'])
+                                        .substring(2),
+                                    style: TextStyle(fontSize: 25))
+                              ],
+                            );
+                          }),
+                          Observer(builder: (context) {
+                            List splitLitros = controller.lastGas['litros']
+                                .toStringAsFixed(2)
+                                .split('.');
+                            return Row(
+                              textBaseline: TextBaseline.alphabetic,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              children: [
+                                Text(
+                                  splitLitros[0],
+                                  style: TextStyle(
+                                      fontSize: 33,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text("." + splitLitros[1] + " lts")
+                              ],
+                            );
+                          }),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: Container(
-        color: Colors.orange,
+        color: Colors.brown[300],
         child: Row(
           children: [
             Expanded(
                 child: MaterialButton(
-                    height: MediaQuery.of(context).size.height / 10,
+                    height: MediaQuery.of(context).size.height / 12,
                     onPressed: () {
                       _showGasSheet();
                     },
-                    child: Text("Gasolina"))),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.local_gas_station),
+                        Text("Gasolina"),
+                      ],
+                    ))),
+            Container(
+              height: MediaQuery.of(context).size.height / 12,
+              width: 1,
+              color: Colors.brown[50],
+            ),
             Expanded(
                 child: MaterialButton(
-                    height: MediaQuery.of(context).size.height / 10,
+                    height: MediaQuery.of(context).size.height / 12,
                     onPressed: () {
                       _showtripSheet(controller.lastTrip);
                     },
-                    child: Text("Viagem")))
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.time_to_leave),
+                        Text("Viagem"),
+                      ],
+                    )))
           ],
         ),
       ),
