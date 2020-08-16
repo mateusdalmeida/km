@@ -315,64 +315,76 @@ class _HomeState extends State<Home> {
         isScrollControlled: true,
         builder: (BuildContext context) {
           return Padding(
-            padding: EdgeInsets.all(16),
-            child: Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Form(
-                key: _formGasKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text("Novo Abastecimento"),
-                    TextFormField(
-                      controller: valorController,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        labelText: "Valor",
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value.isEmpty) return "Valor não digitado";
-                        return null;
-                      },
+            padding: MediaQuery.of(context).viewInsets,
+            child: Form(
+              key: _formGasKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Nova Gasolina",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 35),
+                        ),
+                        TextFormField(
+                          controller: valorController,
+                          autofocus: true,
+                          decoration: InputDecoration(labelText: "Valor"),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value.isEmpty) return "Valor não digitado";
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: precoController,
+                          decoration: InputDecoration(
+                            labelText: "Preço",
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value.isEmpty) return "Preço não digitado";
+                            return null;
+                          },
+                        ),
+                      ],
                     ),
-                    TextFormField(
-                      controller: precoController,
-                      decoration: InputDecoration(
-                        labelText: "Preço",
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value.isEmpty) return "Preço não digitado";
-                        return null;
-                      },
-                    ),
-                    MaterialButton(
-                      elevation: 0,
-                      minWidth: double.infinity,
-                      color: Colors.orange,
-                      textColor: Colors.white,
-                      child: Text("Salvar"),
-                      onPressed: () async {
-                        if (_formGasKey.currentState.validate()) {
-                          var gas = {
-                            "epoch": DateTime.now().millisecondsSinceEpoch,
-                            "preco": double.parse(precoController.text),
-                            "valor": double.parse(valorController.text)
-                          };
-                          databaseReference
-                              .collection("gas")
-                              .document()
-                              .setData(gas);
+                  ),
+                  Container(
+                    color: Colors.brown[300],
+                    child: Expanded(
+                      child: MaterialButton(
+                        minWidth: double.infinity,
+                        height: MediaQuery.of(context).size.height / 12,
+                        child: Text("Salvar"),
+                        onPressed: () async {
+                          if (_formGasKey.currentState.validate()) {
+                            var gas = {
+                              "epoch": DateTime.now().millisecondsSinceEpoch,
+                              "preco": double.parse(precoController.text),
+                              "valor": double.parse(valorController.text)
+                            };
+                            databaseReference
+                                .collection("gas")
+                                .document()
+                                .setData(gas);
 
-                          precoController.clear();
-                          valorController.clear();
-                          Navigator.pop(context);
-                        }
-                      },
-                    )
-                  ],
-                ),
+                            precoController.clear();
+                            valorController.clear();
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           );
@@ -390,72 +402,85 @@ class _HomeState extends State<Home> {
         isScrollControlled: true,
         builder: (BuildContext context) {
           return Padding(
-            padding: EdgeInsets.all(16),
-            child: Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Form(
-                key: _formTripKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text("Novo Km"),
-                    TextFormField(
-                      controller: kmController,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        labelText: "Km",
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value.isEmpty) return "km não digitado";
-                        return null;
-                      },
+            padding: MediaQuery.of(context).viewInsets,
+            child: Form(
+              key: _formTripKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Novo Km",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 35)),
+                        TextFormField(
+                          controller: kmController,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            labelText: "Km",
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value.isEmpty) return "km não digitado";
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: obsController,
+                          decoration: InputDecoration(
+                            labelText: "Obs",
+                          ),
+                        ),
+                      ],
                     ),
-                    TextFormField(
-                      controller: obsController,
-                      decoration: InputDecoration(
-                        labelText: "Obs",
-                      ),
-                    ),
-                    MaterialButton(
-                      elevation: 0,
-                      minWidth: double.infinity,
-                      color: Colors.orange,
-                      textColor: Colors.white,
-                      child: Text("Salvar"),
-                      onPressed: () {
-                        if (_formTripKey.currentState.validate()) {
-                          if (isNew) {
-                            var newTrip = {
-                              "epoch": DateTime.now().millisecondsSinceEpoch,
-                              "initial": int.parse(kmController.text),
-                              "obs": obsController.text
-                            };
-                            if (obsController.text == '') newTrip.remove("obs");
-                            databaseReference
-                                .collection("trip")
-                                .document()
-                                .setData(newTrip);
-                          } else {
-                            var finalTrip = {
-                              "final": int.parse(kmController.text),
-                              "obs": obsController.text
-                            };
-                            if (obsController.text == '')
-                              finalTrip.remove("obs");
-                            databaseReference
-                                .collection("trip")
-                                .document(trip['id'])
-                                .updateData(finalTrip);
+                  ),
+                  Container(
+                    color: Colors.brown[300],
+                    child: Expanded(
+                      child: MaterialButton(
+                        minWidth: double.infinity,
+                        height: MediaQuery.of(context).size.height / 12,
+                        child: Text("Salvar"),
+                        onPressed: () {
+                          if (_formTripKey.currentState.validate()) {
+                            if (isNew) {
+                              var newTrip = {
+                                "epoch": DateTime.now().millisecondsSinceEpoch,
+                                "initial": int.parse(kmController.text),
+                                "obs": obsController.text
+                              };
+                              if (obsController.text == '')
+                                newTrip.remove("obs");
+                              databaseReference
+                                  .collection("trip")
+                                  .document()
+                                  .setData(newTrip);
+                            } else {
+                              var finalTrip = {
+                                "final": int.parse(kmController.text),
+                                "obs": obsController.text
+                              };
+                              if (obsController.text == '')
+                                finalTrip.remove("obs");
+                              databaseReference
+                                  .collection("trip")
+                                  .document(trip['id'])
+                                  .updateData(finalTrip);
+                            }
+                            kmController.clear();
+                            obsController.clear();
+                            Navigator.pop(context);
                           }
-                          kmController.clear();
-                          obsController.clear();
-                          Navigator.pop(context);
-                        }
-                      },
-                    )
-                  ],
-                ),
+                        },
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           );
