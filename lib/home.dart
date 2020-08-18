@@ -156,29 +156,27 @@ class _HomeState extends State<Home> {
                   ),
                   Container(
                     color: Colors.brown[300],
-                    child: Expanded(
-                      child: MaterialButton(
-                        minWidth: double.infinity,
-                        height: MediaQuery.of(context).size.height / 12,
-                        child: Text("Salvar"),
-                        onPressed: () async {
-                          if (_formGasKey.currentState.validate()) {
-                            var gas = {
-                              "epoch": DateTime.now().millisecondsSinceEpoch,
-                              "preco": double.parse(precoController.text),
-                              "valor": double.parse(valorController.text)
-                            };
-                            databaseReference
-                                .collection("gas")
-                                .document()
-                                .setData(gas);
+                    child: MaterialButton(
+                      minWidth: double.infinity,
+                      height: MediaQuery.of(context).size.height / 12,
+                      child: Text("Salvar"),
+                      onPressed: () async {
+                        if (_formGasKey.currentState.validate()) {
+                          var gas = {
+                            "epoch": DateTime.now().millisecondsSinceEpoch,
+                            "preco": double.parse(precoController.text),
+                            "valor": double.parse(valorController.text)
+                          };
+                          databaseReference
+                              .collection("gas")
+                              .document()
+                              .setData(gas);
 
-                            precoController.clear();
-                            valorController.clear();
-                            Navigator.pop(context);
-                          }
-                        },
-                      ),
+                          precoController.clear();
+                          valorController.clear();
+                          Navigator.pop(context);
+                        }
+                      },
                     ),
                   )
                 ],
@@ -193,7 +191,6 @@ class _HomeState extends State<Home> {
     if (!isNew) {
       if (trip['obs'] != null) obsController.text = trip['obs'];
     }
-    print(isNew);
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -238,43 +235,40 @@ class _HomeState extends State<Home> {
                   ),
                   Container(
                     color: Colors.brown[300],
-                    child: Expanded(
-                      child: MaterialButton(
-                        minWidth: double.infinity,
-                        height: MediaQuery.of(context).size.height / 12,
-                        child: Text("Salvar"),
-                        onPressed: () {
-                          if (_formTripKey.currentState.validate()) {
-                            if (isNew) {
-                              var newTrip = {
-                                "epoch": DateTime.now().millisecondsSinceEpoch,
-                                "initial": int.parse(kmController.text),
-                                "obs": obsController.text
-                              };
-                              if (obsController.text == '')
-                                newTrip.remove("obs");
-                              databaseReference
-                                  .collection("trip")
-                                  .document()
-                                  .setData(newTrip);
-                            } else {
-                              var finalTrip = {
-                                "final": int.parse(kmController.text),
-                                "obs": obsController.text
-                              };
-                              if (obsController.text == '')
-                                finalTrip.remove("obs");
-                              databaseReference
-                                  .collection("trip")
-                                  .document(trip['id'])
-                                  .updateData(finalTrip);
-                            }
-                            kmController.clear();
-                            obsController.clear();
-                            Navigator.pop(context);
+                    child: MaterialButton(
+                      minWidth: double.infinity,
+                      height: MediaQuery.of(context).size.height / 12,
+                      child: Text("Salvar"),
+                      onPressed: () {
+                        if (_formTripKey.currentState.validate()) {
+                          if (isNew) {
+                            var newTrip = {
+                              "epoch": DateTime.now().millisecondsSinceEpoch,
+                              "initial": int.parse(kmController.text),
+                              "obs": obsController.text
+                            };
+                            if (obsController.text == '') newTrip.remove("obs");
+                            databaseReference
+                                .collection("trip")
+                                .document()
+                                .setData(newTrip);
+                          } else {
+                            var finalTrip = {
+                              "final": int.parse(kmController.text),
+                              "obs": obsController.text
+                            };
+                            if (obsController.text == '')
+                              finalTrip.remove("obs");
+                            databaseReference
+                                .collection("trip")
+                                .document(trip['id'])
+                                .updateData(finalTrip);
                           }
-                        },
-                      ),
+                          kmController.clear();
+                          obsController.clear();
+                          Navigator.pop(context);
+                        }
+                      },
                     ),
                   )
                 ],
