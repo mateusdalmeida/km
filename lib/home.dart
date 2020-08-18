@@ -22,15 +22,6 @@ class _HomeState extends State<Home> {
 
   Controller controller = Controller();
 
-  String dateFormat(epoch) {
-    String data = DateTime.fromMillisecondsSinceEpoch(epoch).toString();
-    return data.substring(8, 10) +
-        "." +
-        data.substring(5, 7) +
-        "." +
-        data.substring(0, 4);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,24 +33,27 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //km disponiveis
-                Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    children: [
-                      Observer(builder: (context) {
-                        return Text(
-                          controller.disponible.toInt().toString(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 80),
-                        );
-                      }),
-                      Text("km")
-                    ]),
-                SizedBox(height: 32),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 32),
+                  child: Row(
+                      textBaseline: TextBaseline.alphabetic,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      children: [
+                        Observer(builder: (context) {
+                          return Text(
+                            controller.disponible.toInt().toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 80),
+                          );
+                        }),
+                        Text("km")
+                      ]),
+                ),
                 //card da trip
-                TripCard(trip: controller.lastTrip),
-
-                SizedBox(height: 32),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 32),
+                  child: TripCard(trip: controller.lastTrip),
+                ),
                 // card da gasolina
                 GasCard(gas: controller.lastGas)
               ],
