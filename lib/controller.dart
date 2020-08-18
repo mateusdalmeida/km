@@ -38,7 +38,7 @@ abstract class ControllerBase with Store {
 
   @observable
   ObservableMap lastGas =
-      ObservableMap.of({"preco": 0, "valor": 0, "epoch": 0});
+      ObservableMap.of({"preco": 0, "valor": 0, "epoch": 0, "litros": 0});
 
   @observable
   double litrosTotais = 0;
