@@ -52,10 +52,14 @@ class _HomeState extends State<Home> {
                 //card da trip
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32),
-                  child: TripCard(trip: controller.lastTrip),
+                  child: Observer(builder: (context) {
+                    return tripCard(controller.lastTrip);
+                  }),
                 ),
                 // card da gasolina
-                GasCard(gas: controller.lastGas)
+                Observer(builder: (context) {
+                  return gasCard(controller.lastGas);
+                })
               ],
             ),
           ),
