@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:km/controller.dart';
+import 'package:km/listAll.dart';
 import 'package:km/widgets/gasCard.dart';
 import 'package:km/widgets/tripCard.dart';
 
@@ -53,12 +54,28 @@ class _HomeState extends State<Home> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32),
                   child: Observer(builder: (context) {
-                    return tripCard(controller.lastTrip);
+                    return GestureDetector(
+                        onLongPress: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ListAll(type: 'trip')),
+                          );
+                        },
+                        child: tripCard(controller.lastTrip));
                   }),
                 ),
                 // card da gasolina
                 Observer(builder: (context) {
-                  return gasCard(controller.lastGas);
+                  return GestureDetector(
+                      onLongPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ListAll(type: 'gas')),
+                        );
+                      },
+                      child: gasCard(controller.lastGas));
                 })
               ],
             ),

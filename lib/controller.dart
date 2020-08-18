@@ -58,10 +58,11 @@ abstract class ControllerBase with Store {
 
   @action
   addToGasMap(DocumentSnapshot item) {
-    gasMap[item.documentID] = item.data;
+    Map aux = item.data;
+    aux['litros'] = aux['valor'] / aux['preco'];
+    gasMap[item.documentID] = aux;
     lastGas.clear();
-    lastGas.addAll(item.data);
-    lastGas['litros'] = lastGas['valor'] / lastGas['preco'];
+    lastGas.addAll(aux);
     litrosTotais += lastGas['litros'];
   }
 
@@ -69,12 +70,12 @@ abstract class ControllerBase with Store {
   addToTripMap(DocumentSnapshot item) {
     Map aux = item.data;
     aux['id'] = item.documentID;
+    if (aux['final'] != null) {
+      aux['road'] = aux['final'] - aux['initial'];
+      kmTotais += aux['road'];
+    }
     tripMap[item.documentID] = aux;
     lastTrip.clear();
     lastTrip.addAll(aux);
-    if (lastTrip['final'] != null) {
-      lastTrip['road'] = lastTrip['final'] - lastTrip['initial'];
-      kmTotais += lastTrip['road'];
-    }
   }
 }
